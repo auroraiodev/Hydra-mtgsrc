@@ -1,0 +1,14 @@
+services:
+  hydra-mtgsrc:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    networks:
+      coolify:
+        aliases:
+          - hydra-mtgsrc
+
+networks:
+  coolify:
+    external: true
