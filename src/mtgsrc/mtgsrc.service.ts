@@ -54,10 +54,16 @@ function normalizeLang(lang: string): string {
   return LANG_ALIAS_MAP[upper] || upper;
 }
 
+const HARERUYA_API_URL: string =
+  process.env.HARERUYA_API_URL ||
+  'https://www.hareruyamtg.com/en/products/search/unisearch_api';
+const HARERUYA_BASE_URL: string =
+  process.env.HARERUYA_BASE_URL || 'https://www.hareruyamtg.com';
+
 @Injectable()
 export class MtgsrcService {
   private readonly logger = new Logger(MtgsrcService.name);
-  private readonly baseUrl = 'https://www.hareruyamtg.com/en/products/search/unisearch_api';
+  private readonly baseUrl = HARERUYA_API_URL;
 
   constructor(
     private readonly currencyService: CurrencyService,
@@ -76,8 +82,8 @@ export class MtgsrcService {
       Accept: 'application/json, text/plain, */*',
       'Accept-Language': 'ja,en-US;q=0.9,en;q=0.8',
       'Accept-Encoding': 'gzip, deflate, br',
-      Referer: refererUrl || 'https://www.hareruyamtg.com/en/products/search',
-      Origin: 'https://www.hareruyamtg.com',
+      Referer: refererUrl || `${HARERUYA_BASE_URL}/en/products/search`,
+      Origin: HARERUYA_BASE_URL,
       'Sec-Fetch-Dest': 'empty',
       'Sec-Fetch-Mode': 'cors',
       'Sec-Fetch-Site': 'same-origin',
@@ -151,7 +157,7 @@ export class MtgsrcService {
       this.logger.debug(`Fetching from Hareruya: ${url}`);
       const response = await axios.get(url, {
         headers: this.getBrowserHeaders(
-          `https://www.hareruyamtg.com/en/products/search?product=${encodeURIComponent(cardName)}`,
+          `${HARERUYA_BASE_URL}/en/products/search?product=${encodeURIComponent(cardName)}`,
         ),
         responseType: 'text',
         timeout: 10000, // 10s timeout
